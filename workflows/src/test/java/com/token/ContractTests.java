@@ -1,4 +1,4 @@
-package com.universaltoken;
+package com.token;
 
 import net.corda.testing.node.MockServices;
 import org.junit.Test;

@@ -92,8 +92,8 @@ dependencies {
 
 cordapp {
     info {
-        name "UniversalToken"
-        vendor "UniversalToken Open Source"
+        name "ProgrammableToken"
+        vendor "ProgrammableToken Open Source"
         targetPlatformVersion corda_platform_version
         minimumPlatformVersion corda_platform_version
     }

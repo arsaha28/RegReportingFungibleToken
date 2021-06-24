@@ -1,14 +1,14 @@
-package com.universaltoken.flows;
+package com.token.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
 import net.corda.core.flows.*;
 import net.corda.core.transactions.SignedTransaction;
 
-@InitiatedBy(UniversalTokenTransferInitiatorFlow.class)
-public class UniversalTokenTransferResponderFlow extends FlowLogic<SignedTransaction> {
+@InitiatedBy(ProgrammableTokenTransferInitiatorFlow.class)
+public class ProgrammableTokenTransferResponderFlow extends FlowLogic<SignedTransaction> {
     private FlowSession otherPartySession;
 
-    public UniversalTokenTransferResponderFlow(FlowSession otherPartySession) {
+    public ProgrammableTokenTransferResponderFlow(FlowSession otherPartySession) {
         this.otherPartySession = otherPartySession;
     }
 

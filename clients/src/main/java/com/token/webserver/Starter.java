@@ -1,4 +1,4 @@
-package com.universaltoken.webserver;
+package com.token.webserver;
 
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;

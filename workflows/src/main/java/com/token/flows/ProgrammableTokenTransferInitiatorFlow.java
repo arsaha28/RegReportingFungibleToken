@@ -1,8 +1,8 @@
-package com.universaltoken.flows;
+package com.token.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.universaltoken.contracts.UniversalTokenContract;
-import com.universaltoken.states.UniversalToken;
+import com.token.contracts.ProgrammableTokenContract;
+import com.token.states.ProgrammableToken;
 import net.corda.core.contracts.StateAndRef;
 import net.corda.core.flows.*;
 import net.corda.core.identity.Party;
@@ -17,13 +17,13 @@ import java.util.stream.Collectors;
 
 @InitiatingFlow
 @StartableByRPC
-public class UniversalTokenTransferInitiatorFlow extends FlowLogic<SignedTransaction> {
+public class ProgrammableTokenTransferInitiatorFlow extends FlowLogic<SignedTransaction> {
     private final Party issuer;
     private final int amount;
     private final Party receiver;
     private final Party notified;
 
-    public UniversalTokenTransferInitiatorFlow(Party issuer, int amount, Party receiver,Party notified) {
+    public ProgrammableTokenTransferInitiatorFlow(Party issuer, int amount, Party receiver, Party notified) {
         this.issuer = issuer;
         this.amount = amount;
         this.receiver = receiver;
@@ -33,14 +33,14 @@ public class UniversalTokenTransferInitiatorFlow extends FlowLogic<SignedTransac
     @Override
     @Suspendable
     public SignedTransaction call() throws FlowException {
-        List<StateAndRef<UniversalToken>> allTokenStateAndRefs =
-                getServiceHub().getVaultService().queryBy(UniversalToken.class).getStates();
+        List<StateAndRef<ProgrammableToken>> allTokenStateAndRefs =
+                getServiceHub().getVaultService().queryBy(ProgrammableToken.class).getStates();
 
         AtomicInteger totalTokenAvailable = new AtomicInteger();
-        List<StateAndRef<UniversalToken>> inputStateAndRef = new ArrayList<>();
+        List<StateAndRef<ProgrammableToken>> inputStateAndRef = new ArrayList<>();
         AtomicInteger change = new AtomicInteger(0);
 
-        List<StateAndRef<UniversalToken>> tokenStateAndRefs =  allTokenStateAndRefs.stream()
+        List<StateAndRef<ProgrammableToken>> tokenStateAndRefs =  allTokenStateAndRefs.stream()
                 .filter(tokenStateStateAndRef -> {
                     if(tokenStateStateAndRef.getState().getData().getIssuer().equals(issuer)){
                         if(totalTokenAvailable.get() < amount){
@@ -58,14 +58,14 @@ public class UniversalTokenTransferInitiatorFlow extends FlowLogic<SignedTransac
             throw new FlowException("Insufficient balance");
         }
 
-        UniversalToken outputState = new UniversalToken(issuer, receiver,notified, amount);
+        ProgrammableToken outputState = new ProgrammableToken(issuer, receiver,notified, amount);
         TransactionBuilder txBuilder = new TransactionBuilder(getServiceHub().getNetworkMapCache()
                 .getNotaryIdentities().get(0))
                 .addOutputState(outputState)
-                .addCommand(new UniversalTokenContract.Commands.Transfer(), Arrays.asList(getOurIdentity().getOwningKey()));
+                .addCommand(new ProgrammableTokenContract.Commands.Transfer(), Arrays.asList(getOurIdentity().getOwningKey()));
         inputStateAndRef.forEach(txBuilder::addInputState);
         if(change.get() > 0){
-            UniversalToken changeState = new UniversalToken(issuer, getOurIdentity(), notified,change.get());
+            ProgrammableToken changeState = new ProgrammableToken(issuer, getOurIdentity(), notified,change.get());
             txBuilder.addOutputState(changeState);
         }
         txBuilder.verify(getServiceHub());

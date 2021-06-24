@@ -1,8 +1,8 @@
-package com.universaltoken.flows;
+package com.token.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.universaltoken.contracts.UniversalTokenContract;
-import com.universaltoken.states.UniversalToken;
+import com.token.contracts.ProgrammableTokenContract;
+import com.token.states.ProgrammableToken;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.flows.*;
 import net.corda.core.identity.Party;
@@ -11,20 +11,16 @@ import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static java.util.Collections.singletonList;
 
 @StartableByRPC
 @InitiatingFlow
-public class UniversalTokenIssueFlow extends FlowLogic<String> {
+public class ProgrammableTokenIssueFlow extends FlowLogic<String> {
 
     private final Party owner;
     private final Party notified;
     private final int amount;
 
-    public UniversalTokenIssueFlow(Party owner, Party notified, int amount) {
+    public ProgrammableTokenIssueFlow(Party owner, Party notified, int amount) {
         this.owner = owner;
         this.notified = notified;
         this.amount = amount;
@@ -43,13 +39,13 @@ public class UniversalTokenIssueFlow extends FlowLogic<String> {
         Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
         Party issuer = getOurIdentity();
 
-        final UniversalToken tokenState = new UniversalToken(issuer,owner,notified,amount);
+        final ProgrammableToken tokenState = new ProgrammableToken(issuer,owner,notified,amount);
 
 
         TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
-        CommandData commandData = new UniversalTokenContract.Commands.Issue();
+        CommandData commandData = new ProgrammableTokenContract.Commands.Issue();
         transactionBuilder.addCommand(commandData, issuer.getOwningKey(), owner.getOwningKey(),notified.getOwningKey());
-        transactionBuilder.addOutputState(tokenState, UniversalTokenContract.ID);
+        transactionBuilder.addOutputState(tokenState, ProgrammableTokenContract.ID);
         transactionBuilder.verify(getServiceHub());
 
         FlowSession sessionOwner = initiateFlow(owner);

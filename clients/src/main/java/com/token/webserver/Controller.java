@@ -1,4 +1,4 @@
-package com.universaltoken.webserver;
+package com.token.webserver;
 
 import net.corda.core.messaging.CordaRPCOps;
 import org.slf4j.Logger;

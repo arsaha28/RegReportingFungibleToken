@@ -1,6 +1,6 @@
-package com.universaltoken.contracts;
+package com.token.contracts;
 
-import com.universaltoken.states.UniversalToken;
+import com.token.states.ProgrammableToken;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.Contract;
 import net.corda.core.transactions.LedgerTransaction;
@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class UniversalTokenContract implements Contract {
-    public static String ID = "com.universaltoken.contracts.UniversalTokenContract";
+public class ProgrammableTokenContract implements Contract {
+    public static String ID = "com.token.contracts.ProgrammableTokenContract";
 
     @Override
     public void verify(@NotNull LedgerTransaction tx) throws IllegalArgumentException {
@@ -28,9 +28,9 @@ public class UniversalTokenContract implements Contract {
             throw new IllegalArgumentException("Zero Inputs Expected");
         if(tx.getOutputs().size() != 1)
             throw new IllegalArgumentException("One Output Expected");
-        if(!(tx.getOutput(0) instanceof UniversalToken))
+        if(!(tx.getOutput(0) instanceof ProgrammableToken))
             throw new IllegalArgumentException("Output of type TokenState Expected");
-        UniversalToken tokenState = (UniversalToken)tx.getOutput(0);
+        ProgrammableToken tokenState = (ProgrammableToken)tx.getOutput(0);
         if(tokenState.getAmount() < 1)
             throw new IllegalArgumentException("Positive amount expected");
         if(!(tx.getCommand(0).getSigners()
@@ -45,13 +45,13 @@ public class UniversalTokenContract implements Contract {
             throw new IllegalArgumentException("Output count must either be one or two");
         AtomicInteger inputSum = new AtomicInteger();
         tx.getInputs().forEach(contractStateStateAndRef -> {
-            UniversalToken inputState = (UniversalToken)contractStateStateAndRef.getState().getData();
+            ProgrammableToken inputState = (ProgrammableToken)contractStateStateAndRef.getState().getData();
             inputSum.set(inputSum.get() + inputState.getAmount());
         });
 
         AtomicInteger outputSum = new AtomicInteger();
         tx.getOutputs().forEach(contractStateTransactionState -> {
-            outputSum.set(outputSum.get() + ((UniversalToken)contractStateTransactionState.getData()).getAmount());
+            outputSum.set(outputSum.get() + ((ProgrammableToken)contractStateTransactionState.getData()).getAmount());
         });
 
         if(inputSum.get() != outputSum.get())
@@ -60,7 +60,7 @@ public class UniversalTokenContract implements Contract {
                     System.out.println("Found key :"+key.toString());
                 }
         );
-        if(!(tx.getCommand(0).getSigners().contains(((UniversalToken)tx.getInput(0)).getOwner().getOwningKey())))
+        if(!(tx.getCommand(0).getSigners().contains(((ProgrammableToken)tx.getInput(0)).getOwner().getOwningKey())))
             throw new IllegalArgumentException("Owner must Sign");
     }
 

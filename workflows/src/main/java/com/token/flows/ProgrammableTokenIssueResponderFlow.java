@@ -1,14 +1,14 @@
-package com.universaltoken.flows;
+package com.token.flows;
 
 
 import co.paralleluniverse.fibers.Suspendable;
 import net.corda.core.flows.*;
 import net.corda.core.transactions.SignedTransaction;
 
-@InitiatedBy(UniversalTokenIssueFlow.class)
-public class UniversalTokenIssueResponderFlow extends FlowLogic<Void> {
+@InitiatedBy(ProgrammableTokenIssueFlow.class)
+public class ProgrammableTokenIssueResponderFlow extends FlowLogic<Void> {
     private final FlowSession otherSide;
-    public UniversalTokenIssueResponderFlow(FlowSession otherSide) {
+    public ProgrammableTokenIssueResponderFlow(FlowSession otherSide) {
         this.otherSide = otherSide;
     }
     @Override

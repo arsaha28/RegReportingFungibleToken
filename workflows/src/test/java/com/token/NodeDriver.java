@@ -1,4 +1,4 @@
-package com.universaltoken;
+package com.token;
 
 import com.google.common.collect.ImmutableList;
 import net.corda.core.identity.CordaX500Name;
